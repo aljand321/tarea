@@ -10,13 +10,6 @@ var Ingredientes = require("../../../database/collections/ingredientes");
 
 router.post("/food", (req, res) => {
 
-  if (req.body.name == " " && req.body.descripcion == " ") {
-      res.status(400).json({
-        "msn" : "formato incorrecto"
-      });
-      return;
-    }
-
   var food = {
     name : req.body.name,
     descripcion : req.body.descripcion,
@@ -64,6 +57,38 @@ router.delete(/food\/[a-z0-9]{1,}$/, (req, res) => {
   var id = url.split("/")[2];
   Food.find({_id : id}).remove().exec( (err, docs) => {
       res.status(200).json(docs);
+  });
+});
+
+//actualizar food
+
+router.put(/food\/[a-z0-9]{1,}$/, (req, res) => {
+  var url = req.url;
+  var id = url.split("/")[2];
+  var keys  = Object.keys(req.body);
+  var oficialkeys = ['name', 'descripcion', 'ingredients'];
+  var result = _.difference(oficialkeys, keys);
+  if (result.length > 0) {
+    res.status(400).json({
+      "msn" : "Existe un error en el formato de envio puede hacer uso del metodo patch si desea editar solo un fragmentode la informacion"
+    });
+    return;
+  }
+
+  var food = {
+    name : req.body.name,
+    descripcion : req.body.descripcion,
+    ingredients : req.body.ingredients
+  };
+  Food.findOneAndUpdate({_id: id}, food, (err, params) => {
+      if(err) {
+        res.status(500).json({
+          "msn": "Error no se pudo actualizar los datos"
+        });
+        return;
+      }
+      res.status(200).json(params);
+      return;
   });
 });
 
