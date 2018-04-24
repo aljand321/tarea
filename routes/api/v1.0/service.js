@@ -1,16 +1,45 @@
 var express = require('express');
 var router = express.Router();
-//var ingredientes = require("../../../database/collections/ingredientes");
+
+var Food = require("../../../database/collections/food");
+var Ingredientes = require("../../../database/collections/ingredientes");
+
 
 //crud
-//creacionde ingredientes
+//creacionde food
+
+router.post("/food", (req, res) => {
+
+  if (req.body.name == "" && req.body.descripcion == "") {
+      res.status(400).json({
+        "msn" : "formato incorrecto"
+      });
+      return;
+    }
+
+  var food = {
+    name : req.body.name,
+    descripcion : req.body.descripcion,
+    ingredients : req.body.ingredients
+  };
+  var foodData = new Food(food);
+
+  foodData.save().then( () => {
+      res.status(200).json({
+        "msn" : "Registrado con exito"
+      });
+  });
+
+});
 
 
 
 
 
 /* GET home page. */
-router.post('/imc', function(req, res, next) {
+
+//prueba del ing con postman
+/*router.post('/imc', function(req, res, next) {
   var imc = Number(req.body.masa) / Math.pow(Number(req.body.altura), 2)
 	if (imc < 16) {
 		res.send(
@@ -52,8 +81,8 @@ router.post('/imc', function(req, res, next) {
 		{
 			"msn" : "Error en los datos "
 		});
-	}
+	}*/
   //res.render('index', { title: 'Express' });
-});
+//});
 
 module.exports = router;
