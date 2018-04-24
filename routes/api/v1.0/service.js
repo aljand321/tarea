@@ -10,7 +10,7 @@ var Ingredientes = require("../../../database/collections/ingredientes");
 
 router.post("/food", (req, res) => {
 
-  if (req.body.name == "" && req.body.descripcion == "") {
+  if (req.body.name == " " && req.body.descripcion == " ") {
       res.status(400).json({
         "msn" : "formato incorrecto"
       });
@@ -32,6 +32,40 @@ router.post("/food", (req, res) => {
 
 });
 
+//read food
+
+router.get("/food", (req, res, next) =>{
+  Food.find({}).exec( (error, docs) => {
+      res.status(200).json(docs);
+  })
+});
+
+
+ //only read food
+ router.get(/food\/[a-z0-9]{1,}$/, (req, res) => {
+   var url = req.url;
+   var id = url.split("/")[2];
+   Food.findOne({_id : id}).exec( (error, docs) => {
+     if (docs != null) {
+         res.status(200).json(docs);
+         return;
+     }
+
+     res.status(200).json({
+       "msn" : "No existe la receta "
+     });
+   })
+ });
+
+//eliminar food (comidas)
+
+router.delete(/food\/[a-z0-9]{1,}$/, (req, res) => {
+  var url = req.url;
+  var id = url.split("/")[2];
+  Food.find({_id : id}).remove().exec( (err, docs) => {
+      res.status(200).json(docs);
+  });
+});
 
 
 
