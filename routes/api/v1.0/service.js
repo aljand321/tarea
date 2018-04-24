@@ -92,6 +92,86 @@ router.put(/food\/[a-z0-9]{1,}$/, (req, res) => {
   });
 });
 
+//creamos ingredientes
+
+router.post("/ingredientes", (req, res) => {
+  if (req.body.name == "" && req.body.kcal == "" && req.body.peso == "") {
+    res.status(400).json({
+      "msn" : "formato incorrecto"
+    });
+    return;
+  }
+  var ingredientes = {
+    name : req.body.name,
+    kcal : req.body.kcal,
+    peso : req.body.peso
+  };
+
+  var ingredientesData = new Ingredientes(ingredientes);
+
+  ingredientesData.save().then( () => {
+    res.status(200).json({
+      "msn" : "Ingrediente Registrado con exito "
+    });
+  });
+});
+
+//leer ingredientes
+
+router.get("/ingredientes", (req, res, next) => {
+  Ingredientes.find({}).exec( (error, docs) => {
+    res.status(200).json(docs);
+  })
+});
+
+//solo leer un ingrediente con id
+
+router.get(/ingredientes\/[a-z0-9]{1,}$/, (req, res) => {
+  var url = req.url;
+  var id = url.split("/")[2];
+  Ingredientes.findOne({_id : id}).exec( (error, docs) => {
+    if (docs != null) {
+        res.status(200).json(docs);
+        return;
+    }
+
+    res.status(200).json({
+      "msn" : "No existe el ingrediente"
+    });
+  })
+});
+
+//eliminar ingrediente
+
+router.delete(/ingredientes\/[a-z0-9]{1,}$/, (req, res) => {
+  var url = req.url;
+  var id = url.split("/")[2];
+  Ingredientes.find({_id : id}).remove().exec( (err, docs) => {
+      res.status(200).json(docs);
+  });
+});
+
+//actualizar ingredientes 
+router.patch(/ingredientes\/[a-z0-9]{1,}$/, (req, res) => {
+  var url = req.url;
+  var id = url.split("/")[2];
+  var keys = Object.keys(req.body);
+  var ingredientes = {};
+  for (var i = 0; i < keys.length; i++) {
+    ingredientes[keys[i]] = req.body[keys[i]];
+  }
+  Ingredientes.findOneAndUpdate({_id: id}, ingredientes, (err, params) => {
+      if(err) {
+        res.status(500).json({
+          "msn": "Error no se pudo actualizar los datos"
+        });
+        return;
+      }
+      res.status(200).json(params);
+      return;
+  });
+});
+
 
 
 

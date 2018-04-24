@@ -4,5 +4,5 @@ var ingredientesSchema = {
   kcal : Number,
   peso : Number
 };
-var ingredientes = mongoose.model("ingredient", ingredientesSchema);
+var ingredientes = mongoose.model("ingredientes", ingredientesSchema);
 module.exports = ingredientes;
