@@ -70,7 +70,7 @@ router.put(/food\/[a-z0-9]{1,}$/, (req, res) => {
   var result = _.difference(oficialkeys, keys);
   if (result.length > 0) {
     res.status(400).json({
-      "msn" : "Existe un error en el formato de envio puede hacer uso del metodo patch si desea editar solo un fragmentode la informacion"
+      "msn" : "Existe  error en el formato de envio puede hacer uso del metodo patch si desea editar solo un fragmentode la informacion"
     });
     return;
   }
@@ -151,7 +151,7 @@ router.delete(/ingredientes\/[a-z0-9]{1,}$/, (req, res) => {
   });
 });
 
-//actualizar ingredientes 
+//actualizar ingredientes
 router.patch(/ingredientes\/[a-z0-9]{1,}$/, (req, res) => {
   var url = req.url;
   var id = url.split("/")[2];
